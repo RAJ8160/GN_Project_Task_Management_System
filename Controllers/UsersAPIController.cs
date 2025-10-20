@@ -1,12 +1,20 @@
-﻿using GN_Project_Task_Management_System.DTOs.UsersDTO;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using GN_Project_Task_Management_System.DTOs.UsersDTO;
 using GN_Project_Task_Management_System.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 
 namespace GN_Project_Task_Management_System.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    //[Authorize]
     public class UsersAPIController : ControllerBase
     {
         private readonly GnProjectTmsContext _context;

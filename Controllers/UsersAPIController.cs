@@ -92,6 +92,10 @@ namespace GN_Project_Task_Management_System.Controllers
 
         public IActionResult addNewUser(AddUserDto userDto)
         {
+            if(userDto == null)
+            {
+                return BadRequest(new {message="Enter Proper data for Insert New User."});
+            }
             var user = new User
             {
                 UserName = userDto.UserName,
@@ -115,7 +119,7 @@ namespace GN_Project_Task_Management_System.Controllers
 
             if (existinguser == null)
             {
-                return NotFound();
+                return NotFound(new {message="User not found For updation."});
             }
 
             existinguser.UserName = user.UserName;
@@ -156,12 +160,16 @@ namespace GN_Project_Task_Management_System.Controllers
         [HttpDelete("DeleteMany")]
         public IActionResult DeleteMany(int[] ids)
         {
+            if(ids.Length == 0)
+            {
+                return BadRequest(new {message="Enter Correct data for Delete Many Operation."});
+            }
             for (int i = 0; i < ids.Length; i++)
             {
                 var user = _context.Users.FirstOrDefault(u => u.UserId == ids[i]);
                 if (user == null)
                 {
-                    return NotFound();
+                    return NotFound(new {message="User not Found for Deletion."});
                 }
                 user.ActiveUser = false;
                 _context.SaveChanges();
@@ -169,5 +177,40 @@ namespace GN_Project_Task_Management_System.Controllers
             return NoContent();
         }
         #endregion
+
+        #region User DropDown
+        [HttpGet("UserDropDown")]
+
+        public IActionResult UserDropDown()
+        {
+            var userDropDown = _context.Users.Where(u=>u.ActiveUser==true).Select(u => new {u.UserId, u.UserName}).ToList();
+            return Ok(userDropDown);
+        }
+        #endregion
+
+        #region Search By Email
+        [HttpGet("Search-By-Email")]
+        public IActionResult SearchByEmail(string email)
+        {
+            if (email == null)
+            {
+                return BadRequest(new {message="Please Provide Proper Email for Search by Email."});
+            }
+            var users = _context.Users.Where(x => x.Email.Contains(email) && x.ActiveUser == true).Select(x=>new UserDto
+            {
+                UserId=x.UserId,
+                UserName = x.UserName,
+                Email = x.Email,
+                PasswordHash = x.PasswordHash,
+                ActiveUser = x.ActiveUser,
+                CreatedAt = DateTime.Now,
+            }).ToList();
+            if (!users.Any())
+                return NotFound(new { message = "No users found with this email" });
+
+            return Ok(users);
+        }
+        #endregion
+
     }
 }

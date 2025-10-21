@@ -1,13 +1,15 @@
-﻿using GN_Project_Task_Management_System.DTOs.RoleDTOs;
+﻿using Asp.Versioning;
+using GN_Project_Task_Management_System.DTOs.RoleDTOs;
 using GN_Project_Task_Management_System.DTOs.UsersDTO;
 using GN_Project_Task_Management_System.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace GN_Project_Task_Management_System.Controllers
+namespace GN_Project_Task_Management_System.Controllers.v2
 {
-    [Route("api/[controller]")]
+    [Route("api/v{version:apiVersion}/[controller]")]
+    [ApiVersion("2.0")]
     [ApiController]
     //[Authorize]
     public class RoleAPIController : ControllerBase

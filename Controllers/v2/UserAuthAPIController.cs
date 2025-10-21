@@ -8,10 +8,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.EntityFrameworkCore;
 using GN_Project_Task_Management_System.DTOs;
+using Asp.Versioning;
 
-namespace GN_Project_Task_Management_System.Controllers
+namespace GN_Project_Task_Management_System.Controllers.v2
 {
-    [Route("api/[controller]")]
+    [Route("api/v{version:apiVersion}/[controller]")]
+    [ApiVersion("2.0")]
     [ApiController]
     public class UserAuthAPIController : ControllerBase
     {
@@ -71,8 +73,8 @@ namespace GN_Project_Task_Management_System.Controllers
                 .Where(x => x.u.ActiveUser == true &&
             x.u.PasswordHash == loginUser.PasswordHash &&
             (
-                (!string.IsNullOrEmpty(loginUser.UserName) && x.u.UserName == loginUser.UserName) ||
-                (!string.IsNullOrEmpty(loginUser.UserName) && x.u.Email == loginUser.UserName)
+                !string.IsNullOrEmpty(loginUser.UserName) && x.u.UserName == loginUser.UserName ||
+                !string.IsNullOrEmpty(loginUser.UserName) && x.u.Email == loginUser.UserName
             )).
                 Select(x => new RegisterUserDTO
                 {
